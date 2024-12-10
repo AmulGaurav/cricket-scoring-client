@@ -28,6 +28,7 @@ import { useEffect, useState } from "react";
 import { apiClient } from "@/utils/axios";
 import { useRouter } from "next/navigation";
 import Loader from "@/components/Loader";
+import { AxiosError } from "axios";
 
 const formSchema = z.object({
   firstName: z
@@ -72,11 +73,18 @@ export default function SignUp() {
 
       alert("User registered successfully!");
       router.push("/");
-    } catch (error: any) {
-      console.error("Error:", error.response?.data || error.message);
-
-      if (error.response?.data) setErrorMessage(error.response?.data);
-      else alert("An error occurred while registering.");
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        if (error.response?.data) {
+          setErrorMessage(error.response.data);
+        } else {
+          alert("An error occurred while registering.");
+        }
+      } else {
+        // Fallback (unlikely if error is always AxiosError)
+        console.error("Unexpected error:", error);
+        alert("An unexpected error occurred.");
+      }
     }
   }
 

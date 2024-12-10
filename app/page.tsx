@@ -110,7 +110,7 @@ export default function Home() {
       })
       .then(() => setLoading(false))
       .catch(() => router.push("/auth/signin"));
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     // WebSocket Connection
