@@ -68,7 +68,6 @@ export default function SignUp() {
         username,
         password,
       });
-      console.log("Response:", response.data);
       localStorage.setItem("token", response.data?.token);
 
       alert("User registered successfully!");

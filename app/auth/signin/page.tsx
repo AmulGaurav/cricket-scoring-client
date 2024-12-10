@@ -59,7 +59,6 @@ export default function SignIn() {
         username,
         password,
       });
-      console.log("Response:", response.data);
       localStorage.setItem("token", response.data?.token);
 
       alert("Signed in successfully!");

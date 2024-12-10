@@ -95,8 +95,6 @@ export default function Home() {
           setMatchOverMessage(res.data.matchOver);
           alert(res.data.matchOver);
         }
-
-        console.log(res.data);
       })
       .catch((error) => console.error("Error updating score", error));
   };
@@ -114,7 +112,12 @@ export default function Home() {
 
   useEffect(() => {
     // WebSocket Connection
-    const ws = new WebSocket("ws://localhost:3001");
+    let ws;
+    const backend_url = process.env.NEXT_PUBLIC_BACKEND_URL?.split("//")[1];
+
+    if (backend_url) ws = new WebSocket("wss://" + backend_url);
+    else ws = new WebSocket("wss://localhost:3001");
+
     setSocket(ws);
     updateScore(0, "start", false);
 
@@ -271,7 +274,7 @@ export default function Home() {
                   Ball Start
                 </button>
                 <button
-                  className="bg-[#b36b34] py-7 flex justify-center items-center rounded-lg"
+                  className="bg-[#b36b34] py-7 flex justify-center items-center rounded-lg border-2 border-black"
                   onClick={() => {
                     setRun(0);
                     setExtras("wide");
@@ -281,7 +284,7 @@ export default function Home() {
                   Wide
                 </button>
                 <button
-                  className="bg-[#003e57] py-7 flex justify-center items-center rounded-lg"
+                  className="bg-[#003e57] py-7 flex justify-center items-center rounded-lg border-2 border-black"
                   onClick={() => {
                     setRun(0);
                     setExtras("noBall");
@@ -294,7 +297,7 @@ export default function Home() {
 
               <div className="col-span-1 grid gap-2">
                 <button
-                  className="bg-[#1b00ff] flex justify-center items-center rounded-lg"
+                  className="bg-[#1b00ff] flex justify-center items-center rounded-lg border-2 border-black"
                   onClick={() => {
                     setRun(0);
                     setExtras("");
@@ -304,7 +307,7 @@ export default function Home() {
                   0
                 </button>
                 <button
-                  className="bg-[#008380] flex justify-center items-center rounded-lg"
+                  className="bg-[#008380] flex justify-center items-center rounded-lg border-2 border-black"
                   onClick={() => {
                     setRun(2);
                     setExtras("");
@@ -317,7 +320,7 @@ export default function Home() {
 
               <div className="col-span-1 grid gap-2">
                 <button
-                  className="bg-[#003e57] flex justify-center items-center rounded-lg"
+                  className="bg-[#003e57] flex justify-center items-center rounded-lg border-2 border-black"
                   onClick={() => {
                     setRun(1);
                     setExtras("");
@@ -327,7 +330,7 @@ export default function Home() {
                   1
                 </button>
                 <button
-                  className="bg-[#86efac] flex justify-center items-center rounded-lg"
+                  className="bg-[#86efac] flex justify-center items-center rounded-lg border-2 border-black"
                   onClick={() => {
                     setRun(4);
                     setExtras("");
@@ -340,7 +343,7 @@ export default function Home() {
 
               <div className="col-span-1 grid gap-2">
                 <button
-                  className="bg-[#c40004] flex justify-center items-center rounded-lg"
+                  className="bg-[#c40004] flex justify-center items-center rounded-lg border-2 border-black"
                   onClick={() => {
                     setRun(0);
                     setExtras("");
@@ -350,7 +353,7 @@ export default function Home() {
                   Wicket
                 </button>
                 <button
-                  className="bg-[#9ca3af] flex justify-center items-center rounded-lg"
+                  className="bg-[#9ca3af] flex justify-center items-center rounded-lg border-2 border-black"
                   onClick={() => {
                     setRun(6);
                     setExtras("");
@@ -415,7 +418,7 @@ export default function Home() {
                   Leg Bye
                 </button>
                 <button
-                  className="bg-[#36532b] py-7 flex justify-center items-center rounded-lg"
+                  className="bg-[#36532b] py-7 flex justify-center items-center rounded-lg border-2 border-black"
                   onClick={() => updateScore(run, extras, isWicket)}
                 >
                   Done
