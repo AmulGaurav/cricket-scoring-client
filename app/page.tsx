@@ -36,13 +36,15 @@ interface BowlerInterface {
   wicketsTaken: number;
 }
 
+interface ExtrasInterface {
+  wide: number;
+  noBall: number;
+}
+
 interface TeamInterface {
   name: string;
   totalRuns: number;
-  extras: {
-    wide: number;
-    noBall: number;
-  };
+  extras: ExtrasInterface;
   wicketsLost: number;
   overs: number;
   batters: {
@@ -72,7 +74,7 @@ interface Match {
 export default function Home() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  const [socket, setSocket] = useState<WebSocket | null>(null);
+  const [, setSocket] = useState<WebSocket | null>(null);
   const [match, setMatch] = useState<Match | null>(null);
   const [run, setRun] = useState(0);
   const [extras, setExtras] = useState("");
@@ -255,7 +257,8 @@ export default function Home() {
                 Extra:{" "}
                 {match?.currentBattingTeam === "teamA"
                   ? match.teamA.extras.wide + match.teamA.extras.noBall
-                  : match?.teamB?.extras?.wide + match?.teamB?.extras?.noBall}
+                  : (match?.teamB?.extras?.wide ?? 5) +
+                    (match?.teamB?.extras?.noBall ?? 3)}
               </div>
             </div>
 
