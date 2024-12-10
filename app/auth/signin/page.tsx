@@ -52,8 +52,6 @@ export default function SignIn() {
     },
   });
 
-  console.log(process.env.NEXT_PUBLIC_TEST_VAR);
-
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
@@ -96,7 +94,6 @@ export default function SignIn() {
 
   return (
     <div className="min-h-screen flex justify-center items-center">
-      {process.env.NEXT_PUBLIC_TEST_VAR}
       <Card className="w-[380px]">
         <CardHeader className="text-center">
           <CardTitle>Sign In</CardTitle>
