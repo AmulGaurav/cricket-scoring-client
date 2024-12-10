@@ -89,7 +89,7 @@ export default function SignUp() {
       })
       .then(() => router.push("/"))
       .catch(() => setLoading(false));
-  }, []);
+  }, [router]);
 
   if (loading) return <Loader />;
 

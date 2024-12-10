@@ -80,7 +80,7 @@ export default function SignIn() {
       })
       .then(() => router.push("/"))
       .catch(() => setLoading(false));
-  }, []);
+  }, [router]);
 
   if (loading) return <Loader />;
 
