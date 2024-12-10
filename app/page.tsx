@@ -117,8 +117,8 @@ export default function Home() {
     let ws;
     const backend_url = process.env.NEXT_PUBLIC_BACKEND_URL?.split("//")[1];
 
-    if (backend_url) ws = new WebSocket("ws://" + backend_url);
-    else ws = new WebSocket("wss://localhost:3001");
+    if (backend_url) ws = new WebSocket("wss://" + backend_url);
+    else ws = new WebSocket("ws://localhost:3001");
 
     setSocket(ws);
     updateScore(0, "start", false);
