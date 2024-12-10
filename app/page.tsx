@@ -117,7 +117,7 @@ export default function Home() {
     let ws;
     const backend_url = process.env.NEXT_PUBLIC_BACKEND_URL?.split("//")[1];
 
-    if (backend_url) ws = new WebSocket("wss://" + backend_url);
+    if (backend_url) ws = new WebSocket("ws://" + backend_url);
     else ws = new WebSocket("wss://localhost:3001");
 
     setSocket(ws);
@@ -136,6 +136,24 @@ export default function Home() {
   }, []);
 
   if (loading) return <Loader />;
+
+  const ballsTable = () => (
+    <div className="border rounded-lg bg-[#f3f4f6] flex items-center justify-between p-4 mb-2">
+      <div className="font-medium">
+        {match
+          ? match?.currentOver.overNumber * 6 + match?.currentOver.ballsBowled
+          : 0}{" "}
+        Balls
+      </div>
+      <div className="flex gap-2">
+        {[1, 1, 2, 0, 1, 1, 4, 1, 1, 0, 0, 4, 0, 0, 4].map((runs, index) => (
+          <div key={index} className="bg-[#e5e7eb] rounded-md border px-1.5">
+            {runs}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 
   // Render commentary
   const renderCommentary = () => (
@@ -664,31 +682,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="border rounded-lg bg-[#f3f4f6] flex items-center justify-between p-4 mb-2">
-            <div className="font-medium">
-              {match
-                ? match?.currentOver.overNumber * 6 +
-                  match?.currentOver.ballsBowled
-                : 0}{" "}
-              Balls
-            </div>
-            <div className="flex gap-2">
-              <div className="bg-[#e5e7eb] rounded-md border px-1.5">1</div>
-              <div className="bg-[#e5e7eb] rounded-md border px-1.5">1</div>
-              <div className="bg-[#e5e7eb] rounded-md border px-1.5">0</div>
-              <div className="bg-[#e5e7eb] rounded-md border px-1.5">1</div>
-              <div className="bg-[#e5e7eb] rounded-md border px-1.5">1</div>
-              <div className="bg-[#e5e7eb] rounded-md border px-1.5">4</div>
-              <div className="bg-[#e5e7eb] rounded-md border px-1.5">1</div>
-              <div className="bg-[#e5e7eb] rounded-md border px-1.5">1</div>
-              <div className="bg-[#e5e7eb] rounded-md border px-1.5">0</div>
-              <div className="bg-[#e5e7eb] rounded-md border px-1.5">0</div>
-              <div className="bg-[#e5e7eb] rounded-md border px-1.5">4</div>
-              <div className="bg-[#e5e7eb] rounded-md border px-1.5">0</div>
-              <div className="bg-[#e5e7eb] rounded-md border px-1.5">0</div>
-              <div className="bg-[#e5e7eb] rounded-md border px-1.5">4</div>
-            </div>
-          </div>
+          {ballsTable()}
 
           <div className="bg-[#f3f4f6] border rounded-lg px-4 py-3 flex gap-12 mb-3.5">
             <div className="font-medium">Extra</div>
