@@ -2,74 +2,21 @@
 
 import { apiClient, apiClient2 } from "@/utils/axios";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Match } from "@/interfaces/match";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { IoMdSwap } from "react-icons/io";
 import { Switch } from "@/components/ui/switch";
 import { BsChevronDown } from "react-icons/bs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { RiCloseLargeFill } from "react-icons/ri";
-import SearchBar from "@/components/SearchBar";
-import { BsThreeDotsVertical } from "react-icons/bs";
-import { useRouter } from "next/navigation";
 import Loader from "@/components/Loader";
-
-interface BatterInterface {
-  name: string;
-  runs: number;
-  ballsFaced: number;
-  fours: number;
-  sixes: number;
-}
-
-interface BowlerInterface {
-  name: string;
-  ballsBowled: number;
-  oversBowled: number;
-  runsConceded: number;
-  wicketsTaken: number;
-}
-
-interface ExtrasInterface {
-  wide: number;
-  noBall: number;
-}
-
-interface TeamInterface {
-  name: string;
-  totalRuns: number;
-  extras: ExtrasInterface;
-  wicketsLost: number;
-  overs: number;
-  batters: {
-    striker: BatterInterface;
-    nonStriker: BatterInterface;
-  };
-  bowlers: {
-    bowler: BowlerInterface;
-    nonBowler: BowlerInterface;
-  };
-}
-
-interface CurrentOver {
-  ballsBowled: number;
-  overNumber: number;
-}
-
-interface Match {
-  teamA: TeamInterface;
-  teamB: TeamInterface;
-  currentBattingTeam: "teamA" | "teamB";
-  innings: 1 | 2;
-  currentOver: CurrentOver;
-  commentary: Array<{ ball: string; run: number; text: string }>;
-}
+import PlayerSelection from "@/components/PlayerSelection";
+import Commentary from "@/components/Commentary";
+import Search from "@/components/Search";
+import CurrentInnings from "@/components/CurrentInnings";
+import Extras from "@/components/Extras";
+import BallsTable from "@/components/BallsTable";
+import BowlersTable from "@/components/BowlersTable";
+import BattersTable from "@/components/BattersTable";
 
 export default function Home() {
   const router = useRouter();
@@ -137,131 +84,11 @@ export default function Home() {
 
   if (loading) return <Loader />;
 
-  const ballsTable = () => (
-    <div className="border rounded-lg bg-[#f3f4f6] flex items-center justify-between p-4 mb-2">
-      <div className="font-medium">
-        {match
-          ? match?.currentOver.overNumber * 6 + match?.currentOver.ballsBowled
-          : 0}{" "}
-        Balls
-      </div>
-      <div className="flex gap-2">
-        {[1, 1, 2, 0, 1, 1, 4, 1, 1, 0, 0, 4, 0, 0, 4].map((runs, index) => (
-          <div key={index} className="bg-[#e5e7eb] rounded-md border px-1.5">
-            {runs}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  // Render commentary
-  const renderCommentary = () => (
-    <div className="space-y-2.5">
-      {match?.commentary?.slice(-5).map((comment, index) => (
-        <div key={index} className="flex items-center justify-around">
-          <div className="w-12 h-12 flex items-center justify-center rounded-full bg-[#bbf7d0]">
-            {comment.run}
-          </div>
-
-          <div className="max-w-sm flex items-center gap-4">
-            <div className="font-medium">{comment.ball}</div>
-            <div>{comment.text}.</div>
-          </div>
-
-          <div className="cursor-pointer">
-            <BsThreeDotsVertical size={"18px"} />
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-
   return (
     <div className="">
       <div className="min-h-screen lg:grid grid-cols-3 gap-5 px-6 py-4">
         <div className="col-span-2 px-2 pt-8 border shadow-lg rounded-lg">
-          <div className="grid grid-cols-6 gap-5 mb-14 font-medium">
-            <div className="col-span-4">
-              <div className="flex justify-around gap-2">
-                <div>
-                  <div>Batsman (Striker)</div>
-                  <Select>
-                    <SelectTrigger className="w-[80px] sm:w-[108px] md:w-[140px] lg:w-[196px] xl:w-[250px] 2xl:w-[386px]">
-                      <SelectValue
-                        placeholder={`${
-                          match?.currentBattingTeam === "teamA"
-                            ? match.teamA.batters.striker.name
-                            : match?.teamB.batters.striker.name
-                        }`}
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="apple">Tanzim Hasan Sakib</SelectItem>
-                      <SelectItem value="banana">Towhid Hridoy</SelectItem>
-                      <SelectItem value="blueberry">Virat Kohli</SelectItem>
-                      <SelectItem value="grapes">M.S. Dhoni</SelectItem>
-                      <SelectItem value="pineapple">
-                        Sachin Tendulkar
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="flex items-center justify-center">
-                  <IoMdSwap color="red" size={"25px"} />
-                </div>
-
-                <div>
-                  <div>Batsman (Non Striker)</div>
-                  <Select>
-                    <SelectTrigger className="w-[80px] sm:w-[108px] md:w-[140px] lg:w-[196px] xl:w-[250px] 2xl:w-[386px]">
-                      <SelectValue
-                        placeholder={`${
-                          match?.currentBattingTeam === "teamA"
-                            ? match.teamA.batters.nonStriker.name
-                            : match?.teamB.batters.nonStriker.name
-                        }`}
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="apple">Tohid Hridoy</SelectItem>
-                      <SelectItem value="banana">Tanzim Hasan Sakib</SelectItem>
-                      <SelectItem value="blueberry">Virat Kohli</SelectItem>
-                      <SelectItem value="grapes">M.S. Dhoni</SelectItem>
-                      <SelectItem value="pineapple">
-                        Sachin Tendulkar
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-span-2 flex justify-center">
-              <div>
-                <div>Bowler</div>
-                <Select>
-                  <SelectTrigger className="w-[80px] sm:w-[108px] md:w-[140px] lg:w-[196px] xl:w-[250px] 2xl:w-[390px]">
-                    <SelectValue
-                      placeholder={`${
-                        match?.currentBattingTeam === "teamA"
-                          ? match.teamB.bowlers.bowler.name
-                          : match?.teamA.bowlers.bowler.name
-                      }`}
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="banana">Nitish Kumar Reddy</SelectItem>
-                    <SelectItem value="apple">Jasprit Bumrah</SelectItem>
-                    <SelectItem value="blueberry">Trent Boult</SelectItem>
-                    <SelectItem value="grapes">Adam Zampa</SelectItem>
-                    <SelectItem value="pineapple">Sachin Tendulkar</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </div>
+          <PlayerSelection match={match} />
 
           <div className="flex justify-between items-center mb-16">
             <div className="pl-3 space-y-3.5 font-bold">
@@ -536,208 +363,21 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="border mb-3">
-            <div className="bg-[#e5e7eb] grid grid-cols-6 font-extrabold text-[#6b7280] px-2 xl:px-4 2xl:px-6 py-1">
-              <div className="col-span-2">Batsman</div>
-              <div className="text-center">R</div>
-              <div className="text-center">B</div>
-              <div className="text-center">4s</div>
-              <div className="text-center">6s</div>
-            </div>
-            <div className="grid grid-cols-6  px-2 xl:px-4 2xl:px-6 py-1.5 bg-white">
-              <div className="col-span-2 space-y-2">
-                <div>
-                  {match?.currentBattingTeam === "teamA"
-                    ? match.teamA.batters.striker.name
-                    : match?.teamB.batters.striker.name}
-                  *
-                </div>
-                <div>
-                  {match?.currentBattingTeam === "teamA"
-                    ? match.teamA.batters.nonStriker.name
-                    : match?.teamB.batters.nonStriker.name}
-                </div>
-              </div>
-              <div className="text-center  space-y-2">
-                <div>
-                  {match?.currentBattingTeam === "teamA"
-                    ? match.teamA.batters.striker.runs
-                    : match?.teamB.batters.striker.runs}
-                </div>
-                <div>
-                  {match?.currentBattingTeam === "teamA"
-                    ? match.teamA.batters.nonStriker.runs
-                    : match?.teamB.batters.nonStriker.runs}
-                </div>
-              </div>
-              <div className="text-center  space-y-2">
-                <div>
-                  {match?.currentBattingTeam === "teamA"
-                    ? match.teamA.batters.striker.ballsFaced
-                    : match?.teamB.batters.striker.ballsFaced}
-                </div>
-                <div>
-                  {match?.currentBattingTeam === "teamA"
-                    ? match.teamA.batters.nonStriker.ballsFaced
-                    : match?.teamB.batters.nonStriker.ballsFaced}
-                </div>
-              </div>
-              <div className="text-center  space-y-2">
-                <div>
-                  {match?.currentBattingTeam === "teamA"
-                    ? match.teamA.batters.striker.fours
-                    : match?.teamB.batters.striker.fours}
-                </div>
-                <div>
-                  {match?.currentBattingTeam === "teamA"
-                    ? match.teamA.batters.nonStriker.fours
-                    : match?.teamB.batters.nonStriker.fours}
-                </div>
-              </div>
-              <div className="text-center  space-y-2">
-                <div>
-                  {match?.currentBattingTeam === "teamA"
-                    ? match.teamA.batters.striker.sixes
-                    : match?.teamB.batters.striker.sixes}
-                </div>
-                <div>
-                  {match?.currentBattingTeam === "teamA"
-                    ? match.teamA.batters.nonStriker.sixes
-                    : match?.teamB.batters.nonStriker.sixes}
-                </div>
-              </div>
-            </div>
-          </div>
+          <BattersTable match={match} />
 
-          <div className="border mb-3">
-            <div className="bg-[#e5e7eb] grid grid-cols-6 font-extrabold text-[#6b7280] px-2 xl:px-4 2xl:px-6 py-1">
-              <div className="col-span-2">Bowler</div>
-              <div className="text-center">O</div>
-              <div className="text-center">M</div>
-              <div className="text-center">R</div>
-              <div className="text-center">W</div>
-            </div>
-            <div className="grid grid-cols-6  px-2 xl:px-4 2xl:px-6 py-1.5 bg-white">
-              <div className="col-span-2 space-y-2">
-                <div>
-                  {match?.currentBattingTeam === "teamA"
-                    ? match.teamB.bowlers.bowler.name
-                    : match?.teamA.bowlers.bowler.name}
-                  *
-                </div>
-                <div>
-                  {match?.currentBattingTeam === "teamA"
-                    ? match.teamB.bowlers.nonBowler.name
-                    : match?.teamA.bowlers.nonBowler.name}
-                </div>
-              </div>
-              <div className="text-center  space-y-2">
-                <div>
-                  {match?.currentBattingTeam === "teamA"
-                    ? match.teamB.bowlers.bowler.oversBowled
-                    : match?.teamA.bowlers.bowler.oversBowled}
-                  .
-                  {match?.currentBattingTeam === "teamA"
-                    ? match.teamB.bowlers.bowler.ballsBowled
-                    : match?.teamA.bowlers.bowler.ballsBowled}
-                </div>
-                <div>
-                  {match?.currentBattingTeam === "teamA"
-                    ? match.teamB.bowlers.nonBowler.oversBowled
-                    : match?.teamA.bowlers.nonBowler.oversBowled}
-                  .
-                  {match?.currentBattingTeam === "teamA"
-                    ? match.teamB.bowlers.nonBowler.ballsBowled
-                    : match?.teamA.bowlers.nonBowler.ballsBowled}
-                </div>
-              </div>
-              <div className="text-center  space-y-2">
-                <div>0</div>
-                <div>0</div>
-              </div>
-              <div className="text-center  space-y-2">
-                <div>
-                  {match?.currentBattingTeam === "teamA"
-                    ? match.teamB.bowlers.bowler.runsConceded
-                    : match?.teamA.bowlers.bowler.runsConceded}
-                </div>
-                <div>
-                  {match?.currentBattingTeam === "teamA"
-                    ? match.teamB.bowlers.nonBowler.runsConceded
-                    : match?.teamA.bowlers.nonBowler.runsConceded}
-                </div>
-              </div>
-              <div className="text-center  space-y-2">
-                <div>
-                  {match?.currentBattingTeam === "teamA"
-                    ? match.teamB.bowlers.bowler.wicketsTaken
-                    : match?.teamA.bowlers.bowler.wicketsTaken}
-                </div>
-                <div>
-                  {match?.currentBattingTeam === "teamA"
-                    ? match.teamB.bowlers.nonBowler.wicketsTaken
-                    : match?.teamA.bowlers.nonBowler.wicketsTaken}
-                </div>
-              </div>
-            </div>
-          </div>
+          <BowlersTable match={match} />
 
-          {ballsTable()}
+          <BallsTable match={match} />
 
-          <div className="bg-[#f3f4f6] border rounded-lg px-4 py-3 flex gap-12 mb-3.5">
-            <div className="font-medium">Extra</div>
-            <div>
-              11 (<span className="font-semibold">b</span> 0,{" "}
-              <span className="font-semibold">lb</span> 4,{" "}
-              <span className="font-semibold">wd</span>{" "}
-              {match?.currentBattingTeam === "teamA"
-                ? match.teamA.extras.wide
-                : match?.teamB.extras.wide}
-              , <span className="font-semibold">nb</span>{" "}
-              {match?.currentBattingTeam === "teamA"
-                ? match.teamA.extras.noBall
-                : match?.teamB.extras.noBall}
-              , <span className="font-semibold">P</span> 0)
-            </div>
-          </div>
+          <Extras match={match} />
 
-          <div className="grid grid-cols-2 gap-2 mb-1.5">
-            <Select>
-              <SelectTrigger className="w-full">
-                <SelectValue
-                  placeholder={`${
-                    match?.innings === 1 ? match.teamA.name : match?.teamB.name
-                  }`}
-                />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="banana">Bangladeshy</SelectItem>
-                <SelectItem value="apple">India</SelectItem>
-              </SelectContent>
-            </Select>
+          <CurrentInnings match={match} />
 
-            <Select>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder={`${match?.innings}`} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="banana">1</SelectItem>
-                <SelectItem value="apple">2</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="flex gap-2 mb-4">
-            <SearchBar />
-
-            <div className="flex items-center px-5 py-4 bg-[#ff4d4f] rounded-lg cursor-pointer">
-              <RiCloseLargeFill size={"17px"} color="white" />
-            </div>
-          </div>
+          <Search />
 
           <div className="border mb-3"></div>
 
-          {renderCommentary()}
+          <Commentary match={match} />
         </div>
       </div>
     </div>
